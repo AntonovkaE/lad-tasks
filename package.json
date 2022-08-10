@@ -1,0 +1,22 @@
+{
+  "name": "lad-tasks",
+  "version": "1.0.0",
+  "description": "tasks for internship",
+  "main": "task1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AntonovkaE/lad-tasks.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AntonovkaE/lad-tasks/issues"
+  },
+  "homepage": "https://github.com/AntonovkaE/lad-tasks#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
