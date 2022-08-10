@@ -164,16 +164,6 @@ while (heroState.health > 0 && monsterState.health > 0) {
     checkMonsterHealth(monsterState.health)
 
     console.log(`Ваше здоровье ${heroState.health}, здоровье монстра - ${monsterState.health}`)
-
-    // if (heroState.health < 0) {
-    //     console.log("Game over")
-    //     return "вы проиграли"
-    // }
-    // if (monsterState.health < 0) {
-    //     console.log("ПОБЕДА")
-    //     return "ПОБЕДА!"
-    // }
-
 }
 
 
