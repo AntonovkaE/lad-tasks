@@ -4,7 +4,22 @@ const heroHealth = readlineSync.question('Ваше начальное здоро
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
-function checkHealth (health) {
+function checkMonsterHealth (health) {
+    if (health) {
+        console.log("Монстр мертв")
+        return ("Вы выиграли")
+    }
+}
+
+function decreaseCooldown (obj) {
+    for (key in obj) {
+        if (obj[key] > 0) {
+            obj[key] --
+        }
+    }
+}
+
+function checkHeroHealth (health) {
     if (health) {
         console.log("game over")
         return ("Вы проиграли")
@@ -44,9 +59,11 @@ const monster = {
 
 const monsterState = {
     health: monster.maxHealth,
-    move_1_cooldown: 0,
-    move_2_cooldown: 3,
-    move_3_cooldown: 2,
+    moves_cooldown: {
+        0: 0,
+        1: 0,
+        2: 0
+    }
 }
 
 const hero = {moves: [
@@ -88,22 +105,28 @@ const heroState = {
     health: heroHealth,
     moves_cooldown: {
         0: 0,
-        1: 4,
-        2: 3,
-        4: 4
+        1: 0,
+        2: 0,
+        4: 0
     },
 }
 
-checkHealth(heroState.health)
+checkHeroHealth(heroState.health)
 
 
 // Выбор хода
 const randomStep = monster.moves[getRandomInt(monster.moves.length)];
 console.log(`ход противника - ${randomStep.name}`)
+decreaseCooldown(monsterState.moves_cooldown)
+
+
 
 const moves = [hero.moves[0].name, hero.moves[1].name, hero.moves[2].name, hero.moves[3].name]
 const movesChoice = readlineSync.keyInSelect(moves, 'Ваш ход?');
 console.log(`Вы выбрали - ${moves[movesChoice]}`)
+decreaseCooldown(heroState.moves_cooldown)
+
+heroState.moves_cooldown[movesChoice] = hero.moves[movesChoice].cooldown
 
 
 const checkDmg = (dmg, armor) => {
@@ -126,7 +149,14 @@ const physicDmgHero = checkPhysicDmg(randomStep.physicalDmg, hero.moves[movesCho
 hero.state.health = heroState.health - magicDmgHero - physicDmgHero
 
 
-checkHealth(heroState.health)
+checkHeroHealth(heroState.health)
+
+const magicDmgMonster = checkMagicDmg(hero.moves[movesChoice].magicDmg, randomStep.magicArmorPercents)
+const physicDmgMonster = checkPhysicDmg(hero.moves[movesChoice].physicalDmg, randomStep.physicArmorPercents)
+
+hero.state.health = monsterState.health - magicDmgMonster - physicDmgMonster
+
+
 
 
 
