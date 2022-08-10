@@ -19,6 +19,20 @@ function decreaseCooldown (obj) {
     }
 }
 
+const checkDmg = (dmg, armor) => {
+    return (dmg*(1 - armor/100))
+}
+
+const checkPhysicDmg = (dmg, armor) => {
+    console.log(`ущерб физический здоровью -  ${checkDmg(dmg, armor)}`)
+    return checkDmg(dmg, armor)
+}
+
+const checkMagicDmg = (dmg, armor) => {
+    console.log(`ущерб магический здоровью -  ${checkDmg(dmg, armor)}`)
+    return checkDmg(dmg, armor)
+}
+
 function checkHeroHealth (health) {
     if (health) {
         console.log("game over")
@@ -111,50 +125,56 @@ const heroState = {
     },
 }
 
-checkHeroHealth(heroState.health)
-
-
-// Выбор хода
-const randomStep = monster.moves[getRandomInt(monster.moves.length)];
-console.log(`ход противника - ${randomStep.name}`)
-decreaseCooldown(monsterState.moves_cooldown)
-
-
-
 const moves = [hero.moves[0].name, hero.moves[1].name, hero.moves[2].name, hero.moves[3].name]
-const movesChoice = readlineSync.keyInSelect(moves, 'Ваш ход?');
-console.log(`Вы выбрали - ${moves[movesChoice]}`)
-decreaseCooldown(heroState.moves_cooldown)
-
-heroState.moves_cooldown[movesChoice] = hero.moves[movesChoice].cooldown
-
-
-const checkDmg = (dmg, armor) => {
-    return (dmg*(1 - armor/100))
-}
-
-const checkPhysicDmg = (dmg, armor) => {
-    console.log(`ущерб физический здоровью -  ${checkDmg(dmg, armor)}`)
-    return checkDmg(dmg, armor)
-}
-
-const checkMagicDmg = (dmg, armor) => {
-    console.log(`ущерб магический здоровью -  ${checkDmg(dmg, armor)}`)
-    return checkDmg(dmg, armor)
-}
-
-const magicDmgHero = checkMagicDmg(randomStep.magicDmg, hero.moves[movesChoice].magicArmorPercents)
-const physicDmgHero = checkPhysicDmg(randomStep.physicalDmg, hero.moves[movesChoice].physicArmorPercents)
-
-hero.state.health = heroState.health - magicDmgHero - physicDmgHero
-
 
 checkHeroHealth(heroState.health)
 
-const magicDmgMonster = checkMagicDmg(hero.moves[movesChoice].magicDmg, randomStep.magicArmorPercents)
-const physicDmgMonster = checkPhysicDmg(hero.moves[movesChoice].physicalDmg, randomStep.physicArmorPercents)
+while (heroState.health > 0 || monsterState.health > 0) {
+    // Выбор хода
+    let randomStep = monster.moves[getRandomInt(monster.moves.length)];
+    while (monsterState.moves_cooldown[randomStep] > 0) {
+        randomStep = monster.moves[getRandomInt(monster.moves.length)];
+    }
+    console.log(`ход противника - ${randomStep.name}`)
+    decreaseCooldown(monsterState.moves_cooldown)
 
-hero.state.health = monsterState.health - magicDmgMonster - physicDmgMonster
+    let movesChoice = readlineSync.keyInSelect(moves, 'Ваш ход?');
+    console.log(`Вы выбрали - ${moves[movesChoice]}`)
+    if (heroState.moves_cooldown[movesChoice] > 0) {
+        console.log("Ход недоступен")
+        movesChoice = readlineSync.keyInSelect(moves, 'Выберите новый ход?');
+    }
+    decreaseCooldown(heroState.moves_cooldown)
+
+    heroState.moves_cooldown[movesChoice] = hero.moves[movesChoice].cooldown
+
+
+    const magicDmgHero = checkMagicDmg(randomStep.magicDmg, hero.moves[movesChoice].magicArmorPercents)
+    const physicDmgHero = checkPhysicDmg(randomStep.physicalDmg, hero.moves[movesChoice].physicArmorPercents)
+
+    heroState.health = heroState.health - magicDmgHero - physicDmgHero
+
+    //
+    // checkHeroHealth(heroState.health)
+
+    const magicDmgMonster = checkMagicDmg(hero.moves[movesChoice].magicDmg, randomStep.magicArmorPercents)
+    const physicDmgMonster = checkPhysicDmg(hero.moves[movesChoice].physicalDmg, randomStep.physicArmorPercents)
+    // checkMonsterHealth(monsterState.health)
+
+    monsterState.health = monsterState.health - magicDmgMonster - physicDmgMonster
+
+    console.log(`Ваше здоровье ${heroState.health}, здоровье монстра - ${monsterState.health}`)
+
+    if (heroState.health < 0) {
+        console.log("Game over")
+        return "вы проиграли"
+    }
+    if (monsterState.health < 0) {
+        console.log("ПОБЕДА")
+        return "ПОБЕДА!"
+    }
+
+}
 
 
 
