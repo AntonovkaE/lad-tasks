@@ -5,7 +5,7 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 function checkMonsterHealth (health) {
-    if (health) {
+    if (health < 0) {
         console.log("Монстр мертв")
         return ("Вы выиграли")
     }
@@ -34,8 +34,8 @@ const checkMagicDmg = (dmg, armor) => {
 }
 
 function checkHeroHealth (health) {
-    if (health) {
-        console.log("game over")
+    if (health < 0) {
+        console.log("Game over")
         return ("Вы проиграли")
     }
 }
@@ -129,7 +129,7 @@ const moves = [hero.moves[0].name, hero.moves[1].name, hero.moves[2].name, hero.
 
 checkHeroHealth(heroState.health)
 
-while (heroState.health > 0 || monsterState.health > 0) {
+while (heroState.health > 0 && monsterState.health > 0) {
     // Выбор хода
     let randomStep = monster.moves[getRandomInt(monster.moves.length)];
     while (monsterState.moves_cooldown[randomStep] > 0) {
@@ -140,9 +140,10 @@ while (heroState.health > 0 || monsterState.health > 0) {
 
     let movesChoice = readlineSync.keyInSelect(moves, 'Ваш ход?');
     console.log(`Вы выбрали - ${moves[movesChoice]}`)
-    if (heroState.moves_cooldown[movesChoice] > 0) {
+    while (heroState.moves_cooldown[movesChoice] > 0) {
         console.log("Ход недоступен")
         movesChoice = readlineSync.keyInSelect(moves, 'Выберите новый ход?');
+        console.log(`Вы выбрали - ${moves[movesChoice]}`)
     }
     decreaseCooldown(heroState.moves_cooldown)
 
@@ -154,25 +155,24 @@ while (heroState.health > 0 || monsterState.health > 0) {
 
     heroState.health = heroState.health - magicDmgHero - physicDmgHero
 
-    //
-    // checkHeroHealth(heroState.health)
-
     const magicDmgMonster = checkMagicDmg(hero.moves[movesChoice].magicDmg, randomStep.magicArmorPercents)
     const physicDmgMonster = checkPhysicDmg(hero.moves[movesChoice].physicalDmg, randomStep.physicArmorPercents)
-    // checkMonsterHealth(monsterState.health)
+
 
     monsterState.health = monsterState.health - magicDmgMonster - physicDmgMonster
+    checkHeroHealth(heroState.health)
+    checkMonsterHealth(monsterState.health)
 
     console.log(`Ваше здоровье ${heroState.health}, здоровье монстра - ${monsterState.health}`)
 
-    if (heroState.health < 0) {
-        console.log("Game over")
-        return "вы проиграли"
-    }
-    if (monsterState.health < 0) {
-        console.log("ПОБЕДА")
-        return "ПОБЕДА!"
-    }
+    // if (heroState.health < 0) {
+    //     console.log("Game over")
+    //     return "вы проиграли"
+    // }
+    // if (monsterState.health < 0) {
+    //     console.log("ПОБЕДА")
+    //     return "ПОБЕДА!"
+    // }
 
 }
 
