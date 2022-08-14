@@ -11,10 +11,11 @@ function getRandomInt(max) {
 
 const computerNumber = getRandomInt(999999)
 console.log(computerNumber)
+const computerNumbers = Array.from(String(computerNumber), Number)
 
 readlineSync.setDefaultOptions({limit: [/\D/]})
-let yourInt;
-let wrongPlace = 0;
+let yourInt = -1;
+let wrongPlace = [];
 let rightNumbers = [];
 
 while (computerNumber !== yourInt) {
@@ -23,22 +24,31 @@ while (computerNumber !== yourInt) {
     console.log("Вы угадали");
     return computerNumber
   }
-  const arrInt = yourInt.split()
-  for (let i = 0; i<arrInt.length; i++) {
+
+  const arrInt =  Array.from(String(yourInt), Number);
+  let wrongPlace = [];
+  let rightNumbers = [];
+  for (let i = (arrInt.length - 1); i<=0; i--) {
+
     // индекс цифры с конца
-    let indexCharacter = arrInt.length - i;
+    let indexCharacter = computerNumbers.length - 1
     // Есть ли первая цифра в числе комьютера
-    let checkingNumber = computerNumber.indexOf(arrInt[i])
+    let checkingNumber = computerNumbers.indexOf(arrInt[i])
+    console.log(`проверим ${checkingNumber}`)
+    debugger;
     if (checkingNumber !== -1) {
       //Правильное ли место занимает цифра
-      if (computerNumber[indexCharacter] === arrInt[i]) {
+      if (computerNumbers[indexCharacter] === arrInt[i]) {
         rightNumbers.push(arrInt[i])
       }
       else {
-        wrongPlace++
+        wrongPlace.push((arrInt[i]))
       }
     }
+    indexCharacter--;
   }
+
+  console.log(`совпавших цифр не на своих местах - ${wrongPlace.length} (${wrongPlace.join(',')}), цифр на своих местах - ${rightNumbers.length} (${rightNumbers.join(',')})`)
 }
 
 
