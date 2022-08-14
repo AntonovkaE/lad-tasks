@@ -1,8 +1,3 @@
-// Например загаданное число: 56478 предположение игрока: 52976
-
-// ответ: совпавших цифр не на своих местах - 1 (6), цифр на своих местах - 2 (5 и 7)
-
-// игра ведется до окончания количества ходов либо до отгадывания
 const readlineSync = require('readline-sync');
 
 function getRandomInt(max) {
@@ -15,28 +10,21 @@ const computerNumbers = Array.from(String(computerNumber), Number)
 
 readlineSync.setDefaultOptions({limit: [/\D/]})
 let yourInt = -1;
-let wrongPlace = [];
-let rightNumbers = [];
 
 while (computerNumber !== yourInt) {
   yourInt = readlineSync.questionInt('Введите число');
   if (yourInt === computerNumber) {
-    console.log("Вы угадали");
+    console.log(`Вы угадали число - ${yourInt}`);
     return computerNumber
   }
-
   const arrInt =  Array.from(String(yourInt), Number);
   let wrongPlace = [];
   let rightNumbers = [];
-  for (let i = (arrInt.length - 1); i<=0; i--) {
-
-    // индекс цифры с конца
-    let indexCharacter = computerNumbers.length - 1
-    // Есть ли первая цифра в числе комьютера
-    let checkingNumber = computerNumbers.indexOf(arrInt[i])
-    console.log(`проверим ${checkingNumber}`)
-    debugger;
-    if (checkingNumber !== -1) {
+  for (let i = 0; i<arrInt.length; i++) {
+    // индекс цифры компьютера
+    let isCharinComputerNumb = (computerNumbers.indexOf(arrInt[i])) === -1 ? false : true;
+    let indexCharacter = computerNumbers.length + i - arrInt.length;
+    if (isCharinComputerNumb) {
       //Правильное ли место занимает цифра
       if (computerNumbers[indexCharacter] === arrInt[i]) {
         rightNumbers.push(arrInt[i])
@@ -45,9 +33,7 @@ while (computerNumber !== yourInt) {
         wrongPlace.push((arrInt[i]))
       }
     }
-    indexCharacter--;
   }
-
   console.log(`совпавших цифр не на своих местах - ${wrongPlace.length} (${wrongPlace.join(',')}), цифр на своих местах - ${rightNumbers.length} (${rightNumbers.join(',')})`)
 }
 
