@@ -5,16 +5,14 @@ function getRandomInt(max) {
 }
 
 const computerNumber = getRandomInt(999999)
-console.log(computerNumber)
 const computerNumbers = Array.from(String(computerNumber), Number)
 
-readlineSync.setDefaultOptions({limit: [/\D/]})
 let yourInt = -1;
 
 while (computerNumber !== yourInt) {
   yourInt = readlineSync.questionInt('Введите число');
   if (yourInt === computerNumber) {
-    console.log(`Вы угадали число - ${yourInt}`);
+    console.log(`Вы угадали! Число - ${yourInt}`);
     return computerNumber
   }
   const arrInt =  Array.from(String(yourInt), Number);
@@ -22,9 +20,10 @@ while (computerNumber !== yourInt) {
   let rightNumbers = [];
   for (let i = 0; i<arrInt.length; i++) {
     // индекс цифры компьютера
-    let isCharinComputerNumb = (computerNumbers.indexOf(arrInt[i])) === -1 ? false : true;
+    let isCharInComputerNumb = (computerNumbers.indexOf(arrInt[i])) === -1 ? false : true;
+    // Пересчет индекса циры компьютера, если количество цифр в числах отличается
     let indexCharacter = computerNumbers.length + i - arrInt.length;
-    if (isCharinComputerNumb) {
+    if (isCharInComputerNumb) {
       //Правильное ли место занимает цифра
       if (computerNumbers[indexCharacter] === arrInt[i]) {
         rightNumbers.push(arrInt[i])
